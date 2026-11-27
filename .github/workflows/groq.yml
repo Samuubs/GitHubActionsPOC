@@ -58,7 +58,7 @@ jobs:
     permissions:
       contents: read
       issues: write
-      pull-requests: read
+      pull-requests: write
     steps:
       - name: Baixar o repositório
         uses: actions/checkout@v4
