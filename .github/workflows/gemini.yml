@@ -47,41 +47,13 @@ jobs:
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
           github_pr_number: ${{ github.event.pull_request.number }}
           workflow_name: gemini-pr-review
-          extensions: |
-            [
-              "https://github.com/gemini-cli-extensions/code-review"
-            ]
-          settings: |-
-            {
-              "model": {
-                "maxSessionTurns": 25
-              },
-              "mcpServers": {
-                "github": {
-                  "command": "docker",
-                  "args": [
-                    "run",
-                    "-i",
-                    "--rm",
-                    "-e",
-                    "GITHUB_PERSONAL_ACCESS_TOKEN",
-                    "ghcr.io/github/github-mcp-server:v0.27.0"
-                  ],
-                  "includeTools": [
-                    "add_comment_to_pending_review",
-                    "pull_request_read",
-                    "pull_request_review_write"
-                  ],
-                  "env": {
-                    "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
-                  }
-                }
-              },
-              "tools": {
-                "core": []
-              }
-            }
-          prompt: /pr-code-review
+          prompt: |-
+            Revise o Pull Request número ${{ github.event.pull_request.number }}.
+            Use as ferramentas GitHub disponíveis para ler o PR e seu diff.
+            Identifique somente problemas concretos introduzidos pelo PR, como bugs ou regressões.
+            Para cada achado, publique um comentário na linha relevante, explicando o impacto.
+            Não invente problemas, não altere arquivos e não crie commits.
+            Se não encontrar problemas, não publique comentários.
 
   assistant:
     name: Assistente em comentários
