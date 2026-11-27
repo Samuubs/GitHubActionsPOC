@@ -105,6 +105,9 @@ jobs:
           workflow_name: gemini-comment-assistant
           settings: |-
             {
+              "model": {
+                "maxSessionTurns": 25
+              },
               "mcpServers": {
                 "github": {
                   "command": "docker",
@@ -117,11 +120,9 @@ jobs:
                     "ghcr.io/github/github-mcp-server:v0.27.0"
                   ],
                   "includeTools": [
-                    "add_issue_comment",
-                    "get_file_contents",
-                    "issue_read",
+                    "add_comment_to_pending_review",
                     "pull_request_read",
-                    "search_code"
+                    "pull_request_review_write"
                   ],
                   "env": {
                     "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
