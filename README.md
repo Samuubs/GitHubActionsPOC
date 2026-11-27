@@ -39,19 +39,3 @@ O build gera `dist\index.js` e `dist\manifest.json`. O diretório `dist` é igno
    ```
 
    A execução testa o projeto, gera um ZIP e o anexa a uma nova GitHub Release.
-
-5. Para demonstrar a integração Groq:
-   - Crie uma chave de API na [GroqCloud](https://console.groq.com/keys).
-   - Cadastre-a no GitHub como secret `GROQ_API_KEY`, em **Settings > Secrets and variables > Actions**.
-   - Abra ou atualize um Pull Request no mesmo repositório para iniciar a revisão.
-   - Como owner, member ou collaborator, comente em um issue ou Pull Request: `@groq explique a função createGreeting`.
-   - A automação responde no comentário. Ela só lê dados do GitHub e publica comentários de revisão/resposta; não altera arquivos nem cria commits.
-
-## Notas de segurança
-
-- Os workflows usam `contents: read` por padrão; somente o workflow de release recebe `contents: write`.
-- Os workflows originais não exigem secrets; a integração Groq requer `GROQ_API_KEY`. O workflow manual de demonstração não realiza deploy.
-- A release só é iniciada por tags no formato `v*.*.*`.
-- A integração Groq exige o secret `GROQ_API_KEY`; sem ele, os jobs de IA falham com uma mensagem explícita. A revisão automática só roda em PRs do mesmo repositório e de autores associados como owner, member ou collaborator; PRs de forks não são processados automaticamente.
-- O workflow da Groq limita o token do GitHub às permissões de leitura e comentários; a API não recebe permissão para alterar o repositório. O diff, o contexto dos arquivos selecionados e os comentários enviados são processados pela API Groq. Consulte os [termos e a política de privacidade da Groq](https://groq.com/privacy-policy/) e confirme a política da organização antes de enviar código confidencial.
-- As respostas da IA são sugestões e precisam de revisão humana. A POC não mescla Pull Requests.
