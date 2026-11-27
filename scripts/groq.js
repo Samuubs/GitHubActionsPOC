@@ -48,7 +48,7 @@ async function githubPages(path) {
 
 async function groq(messages, responseFormat) {
   const body = {
-    model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+    model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
     messages,
     temperature: 0.1
   };
