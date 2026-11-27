@@ -1,4 +1,4 @@
-# POC: GitHub Actions
+# GitHub Actions POC
 
 Projeto pequeno para apresentar, de forma prática, os principais recursos do GitHub Actions. A aplicação Node.js não depende de serviços externos e cada workflow pode ser demonstrado de forma independente.
 
