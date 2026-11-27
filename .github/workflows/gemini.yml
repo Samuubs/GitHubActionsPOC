@@ -43,7 +43,7 @@ jobs:
           GEMINI_CLI_TRUST_WORKSPACE: "true"
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          gemini_cli_version: "0.73.0-nightly.20261123.gaafdfdfb5"
+          gemini_cli_version: "60f8082b14ffa7f10b608270232f3f57b5abbec8"
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
           github_pr_number: ${{ github.event.pull_request.number }}
           workflow_name: gemini-pr-review
