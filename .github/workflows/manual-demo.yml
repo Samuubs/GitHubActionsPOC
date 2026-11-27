@@ -1,0 +1,50 @@
+name: Demo - execução manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      ambiente:
+        description: Ambiente de destino (esta POC não faz deploy)
+        required: true
+        type: choice
+        options:
+          - desenvolvimento
+          - homologacao
+          - producao
+      incluir-detalhes:
+        description: Incluir informações adicionais no resumo
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  preparar:
+    name: Preparar plano
+    runs-on: ubuntu-latest
+    outputs:
+      resumo: ${{ steps.plano.outputs.resumo }}
+    steps:
+      - name: Montar plano de demonstração
+        id: plano
+        env:
+          AMBIENTE: ${{ inputs.ambiente }}
+        run: echo "resumo=Execução manual preparada para $AMBIENTE (sem deploy)." >> "$GITHUB_OUTPUT"
+
+  mostrar:
+    name: Exibir resultado
+    needs: preparar
+    runs-on: ubuntu-latest
+    steps:
+      - name: Adicionar resumo da execução
+        env:
+          RESUMO: ${{ needs.preparar.outputs.resumo }}
+        run: |
+          echo "## Demonstração manual" >> "$GITHUB_STEP_SUMMARY"
+          echo "$RESUMO" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Exibir detalhes opcionais
+        if: inputs.incluir-detalhes
+        run: echo "Este passo só roda quando a opção de detalhes está habilitada."

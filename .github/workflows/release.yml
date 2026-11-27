@@ -1,0 +1,39 @@
+name: Release de demonstração
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Testar, empacotar e publicar release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Executar testes
+        run: npm test
+
+      - name: Gerar build e pacote
+        run: |
+          npm run build
+          zip -r "demo-poc-${GITHUB_REF_NAME}.zip" dist/
+
+      - name: Criar GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" "demo-poc-${GITHUB_REF_NAME}.zip" --title "POC $GITHUB_REF_NAME" --generate-notes

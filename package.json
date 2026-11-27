@@ -1,0 +1,12 @@
+{
+  "name": "github-actions-demo-poc",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Projeto demonstrativo de funcionalidades do GitHub Actions",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "lint": "node --check src/index.js && node --check scripts/build.js && node --check test/index.test.js",
+    "start": "node src/index.js",
+    "test": "node --test"
+  }
+}

@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Testes (Node ${{ matrix.node-version }})
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20, 22]
+    uses: ./.github/workflows/reusable-tests.yml
+    with:
+      node-version: ${{ matrix.node-version }}
+
+  build:
+    name: Build e upload do artefato
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Gerar build
+        run: npm run build
+
+      - name: Publicar artefato do build
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-dist-${{ github.run_id }}
+          path: dist/
+          if-no-files-found: error
+
+  verify-artifact:
+    name: Baixar e verificar artefato
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Baixar artefato do build
+        uses: actions/download-artifact@v4
+        with:
+          name: demo-dist-${{ github.run_id }}
+          path: dist/
+
+      - name: Executar aplicação empacotada
+        run: node dist/index.js
+
+      - name: Conferir manifesto do build
+        run: node -e "const m = require('./dist/manifest.json'); if (!m.name || !m.version) process.exit(1); console.log(m)"

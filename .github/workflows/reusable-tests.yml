@@ -1,0 +1,34 @@
+name: Testes reutilizáveis
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Versão do Node.js usada na execução
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Verificar sintaxe
+        run: npm run lint
+
+      - name: Executar testes
+        run: npm test
