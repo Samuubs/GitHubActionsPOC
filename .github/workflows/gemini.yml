@@ -88,7 +88,6 @@ jobs:
       github.event_name == 'issue_comment' &&
       github.event.sender.type == 'User' &&
       startsWith(github.event.comment.body, '@gemini-cli ') &&
-      length(github.event.comment.body) <= 4000 &&
       contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -109,6 +108,15 @@ jobs:
         run: |
           if [ -z "$GEMINI_API_KEY" ]; then
             echo "::error::Configure o secret GEMINI_API_KEY nas configurações do repositório."
+            exit 1
+          fi
+
+      - name: Validar tamanho do comentário
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          if [ "${#COMMENT_BODY}" -gt 4000 ]; then
+            echo "::error::O comentário excede 4000 caracteres."
             exit 1
           fi
 
