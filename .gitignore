@@ -3,3 +3,4 @@ dist/
 *.zip
 .gemini/
 gha-creds-*.json
+.env
